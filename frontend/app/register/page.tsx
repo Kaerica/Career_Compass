@@ -58,11 +58,13 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/50 p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-50 via-blue-50 to-cyan-50 dark:from-sky-950/30 dark:via-blue-950/30 dark:to-cyan-950/30 p-4">
+      <Card className="w-full max-w-md border-2 border-blue-200 dark:border-blue-800 shadow-xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-sky-600 to-cyan-600 bg-clip-text text-transparent">
+            Create Account
+          </CardTitle>
+          <CardDescription className="text-slate-600 dark:text-slate-400">
             Sign up to start your career journey
           </CardDescription>
         </CardHeader>
@@ -151,7 +153,11 @@ export default function RegisterPage() {
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button 
+              type="submit" 
+              className="w-full bg-gradient-to-r from-blue-600 via-sky-600 to-cyan-600 hover:from-blue-700 hover:via-sky-700 hover:to-cyan-700 text-white shadow-lg hover:shadow-xl transition-all" 
+              disabled={loading}
+            >
               {loading ? 'Creating account...' : 'Sign Up'}
             </Button>
 

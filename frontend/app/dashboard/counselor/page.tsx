@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -10,13 +11,16 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import api from '@/lib/api';
 import { Calendar, Users, BookOpen, TrendingUp } from 'lucide-react';
+import Link from 'next/link';
 
 export default function CounselorDashboard() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const [sessions, setSessions] = useState<any[]>([]);
   const [students, setStudents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'sessions');
 
   useEffect(() => {
     if (!authLoading && (!user || user.role !== 'counselor')) {
@@ -56,9 +60,11 @@ export default function CounselorDashboard() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div>Loading...</div>
-      </div>
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div>Loading...</div>
+        </div>
+      </DashboardLayout>
     );
   }
 
@@ -68,57 +74,57 @@ export default function CounselorDashboard() {
   );
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
+    <DashboardLayout>
+      <div className="mb-8 bg-gradient-to-r from-sky-600 to-blue-600 text-white p-6 rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold">Counselor Dashboard</h1>
-        <p className="text-muted-foreground">Welcome back, {user?.firstName}!</p>
+        <p className="text-sky-100">Welcome back, {user?.firstName}!</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4 mb-6">
-        <Card>
+        <Card className="border-2 border-sky-200 dark:border-sky-800 bg-gradient-to-br from-sky-50 to-blue-50 dark:from-sky-950/30 dark:to-blue-950/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Sessions</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-sky-700 dark:text-sky-300">Total Sessions</CardTitle>
+            <Calendar className="h-4 w-4 text-sky-600 dark:text-sky-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{sessions.length}</div>
+            <div className="text-2xl font-bold text-sky-700 dark:text-sky-300">{sessions.length}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2 border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Upcoming</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">Upcoming</CardTitle>
+            <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{upcomingSessions.length}</div>
+            <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">{upcomingSessions.length}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2 border-cyan-200 dark:border-cyan-800 bg-gradient-to-br from-cyan-50 to-sky-50 dark:from-cyan-950/30 dark:to-sky-950/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Students</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-cyan-700 dark:text-cyan-300">Students</CardTitle>
+            <Users className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{students.length}</div>
+            <div className="text-2xl font-bold text-cyan-700 dark:text-cyan-300">{students.length}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2 border-indigo-200 dark:border-indigo-800 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/30 dark:to-blue-950/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed</CardTitle>
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-indigo-700 dark:text-indigo-300">Completed</CardTitle>
+            <BookOpen className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">
               {sessions.filter((s) => s.status === 'completed').length}
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <Tabs defaultValue="sessions" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="sessions">Sessions</TabsTrigger>
           <TabsTrigger value="students">Students</TabsTrigger>
@@ -236,12 +242,16 @@ export default function CounselorDashboard() {
               <CardDescription>Upload and share resources with students</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button>Upload Resource</Button>
+              <Link href="/dashboard/counselor/resources">
+                <Button className="bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700">
+                  Manage Resources
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </DashboardLayout>
   );
 }
 

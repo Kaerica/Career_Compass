@@ -29,8 +29,8 @@ export default function DashboardPage() {
   }, [user, loading, router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div>Loading...</div>
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="text-foreground">Loading...</div>
     </div>
   );
 }

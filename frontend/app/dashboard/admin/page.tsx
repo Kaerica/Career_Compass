@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -10,13 +11,16 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import api from '@/lib/api';
 import { Users, Shield, BookOpen, TrendingUp } from 'lucide-react';
+import Link from 'next/link';
 
 export default function AdminDashboard() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const [users, setUsers] = useState<any[]>([]);
   const [stats, setStats] = useState<any>({});
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'users');
 
   useEffect(() => {
     if (!authLoading && (!user || user.role !== 'admin')) {
@@ -65,9 +69,11 @@ export default function AdminDashboard() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div>Loading...</div>
-      </div>
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div>Loading...</div>
+        </div>
+      </DashboardLayout>
     );
   }
 
@@ -78,57 +84,57 @@ export default function AdminDashboard() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
+    <DashboardLayout>
+      <div className="mb-8 bg-gradient-to-r from-blue-700 to-indigo-700 text-white p-6 rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <p className="text-muted-foreground">Platform Management</p>
+        <p className="text-blue-100">Platform Management</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4 mb-6">
-        <Card>
+        <Card className="border-2 border-blue-300 dark:border-blue-700 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">Total Users</CardTitle>
+            <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{users.length}</div>
+            <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">{users.length}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2 border-sky-300 dark:border-sky-700 bg-gradient-to-br from-sky-50 to-blue-50 dark:from-sky-950/30 dark:to-blue-950/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Students</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-sky-700 dark:text-sky-300">Students</CardTitle>
+            <TrendingUp className="h-4 w-4 text-sky-600 dark:text-sky-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-sky-700 dark:text-sky-300">
               {users.filter((u) => u.role === 'student').length}
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2 border-cyan-300 dark:border-cyan-700 bg-gradient-to-br from-cyan-50 to-sky-50 dark:from-cyan-950/30 dark:to-sky-950/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Counselors</CardTitle>
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-cyan-700 dark:text-cyan-300">Counselors</CardTitle>
+            <BookOpen className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{counselors.length}</div>
+            <div className="text-2xl font-bold text-cyan-700 dark:text-cyan-300">{counselors.length}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2 border-indigo-300 dark:border-indigo-700 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/30 dark:to-blue-950/30">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Verification</CardTitle>
-            <Shield className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-indigo-700 dark:text-indigo-300">Pending Verification</CardTitle>
+            <Shield className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{unverifiedCounselors.length}</div>
+            <div className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">{unverifiedCounselors.length}</div>
           </CardContent>
         </Card>
       </div>
 
-      <Tabs defaultValue="users" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="counselors">Counselors</TabsTrigger>
@@ -234,7 +240,11 @@ export default function AdminDashboard() {
               <CardDescription>Upload and manage platform resources</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button>Upload Resource</Button>
+              <Link href="/dashboard/admin/resources">
+                <Button className="bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800">
+                  Manage Resources
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </TabsContent>
@@ -250,7 +260,7 @@ export default function AdminDashboard() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </DashboardLayout>
   );
 }
 

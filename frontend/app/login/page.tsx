@@ -47,11 +47,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/50 p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-sky-50 to-cyan-50 dark:from-blue-950/30 dark:via-sky-950/30 dark:to-cyan-950/30 p-4">
+      <Card className="w-full max-w-md border-2 border-blue-200 dark:border-blue-800 shadow-xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Login</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">
+            Login
+          </CardTitle>
+          <CardDescription className="text-slate-600 dark:text-slate-400">
             Enter your credentials to access your account
           </CardDescription>
         </CardHeader>
@@ -88,7 +90,11 @@ export default function LoginPage() {
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button 
+              type="submit" 
+              className="w-full bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-700 hover:to-sky-700 text-white shadow-lg hover:shadow-xl transition-all" 
+              disabled={loading}
+            >
               {loading ? 'Logging in...' : 'Login'}
             </Button>
 
